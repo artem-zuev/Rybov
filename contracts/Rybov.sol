@@ -198,7 +198,6 @@ contract Rybov is Initializable, ERC20Upgradeable, ERC20PausableUpgradeable, Own
     /**
      * @dev Gets a task by ID
      * @param taskId The ID of the task to get
-     * @return Task struct containing task details
      */
     function getTask(uint256 taskId) public view returns (
         string memory description,
