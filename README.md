@@ -1,22 +1,22 @@
 # Rybov Token
 
-Rybov is an ERC20 token designed for use between spouses, friends, and family members to reward each other for completing tasks like "Make tea", "Clean the bathroom", etc. The token is built to be deployed on the Polygon network for low transaction costs and fast confirmations.
+Rybov is a simple ERC20 token designed to be deployed on the Polygon network for low transaction costs and fast confirmations.
 
 ## Features
 
-- **Task Management**: Create, complete, verify, and cancel tasks
-- **Relationship Management**: Establish and remove relationships between users
-- **Reward System**: Automatically mint and distribute tokens as rewards for completed tasks
+- **Standard ERC20 Functionality**: Transfer tokens between addresses
+- **Mintable**: New tokens can be minted by the contract owner
+- **Pausable**: Token transfers can be paused/unpaused by the contract owner
 - **Upgradeable**: Uses OpenZeppelin's UUPS upgradeable pattern for future improvements
 
 ## Smart Contract
 
-The Rybov token is implemented as an ERC20 token with additional functionality for task management and relationship tracking. Key features include:
+The Rybov token is implemented as a standard ERC20 token with the following features:
 
-- **Task Creation**: Users can create tasks and assign them to people they have a relationship with
-- **Task Completion**: Assignees can mark tasks as completed
-- **Task Verification**: Task creators can verify completed tasks, which automatically rewards the assignee
-- **Relationship Management**: Users can establish relationships with others (spouse, friend, etc.)
+- **ERC20 Standard**: Implements the standard ERC20 interface
+- **Ownable**: Contract has an owner with special privileges
+- **Pausable**: Token transfers can be paused in case of emergency
+- **Upgradeable**: Contract can be upgraded using the UUPS pattern
 
 ## Deployment
 
@@ -85,44 +85,45 @@ Replace `mumbai` with:
 
 ## Usage Guide
 
-### For Task Creators
+### For Token Owner
 
-1. **Establish a Relationship**:
+1. **Mint Tokens**:
    ```javascript
-   // Establish a relationship with a friend
-   await rybovContract.establishRelationship(friendAddress, "friend");
+   // Mint 100 tokens to a specific address
+   await rybovContract.mint(recipientAddress, ethers.utils.parseEther("100"));
    ```
 
-2. **Create a Task**:
+2. **Pause Token Transfers**:
    ```javascript
-   // Create a task "Make tea" with a reward of 5 tokens
-   await rybovContract.createTask(friendAddress, "Make tea", 5);
+   // Pause all token transfers in case of emergency
+   await rybovContract.pause();
    ```
 
-3. **Verify a Completed Task**:
+3. **Unpause Token Transfers**:
    ```javascript
-   // Verify task completion and reward the assignee
-   await rybovContract.verifyTask(taskId);
+   // Resume token transfers
+   await rybovContract.unpause();
    ```
 
-### For Task Assignees
+### For Token Holders
 
-1. **View Assigned Tasks**:
-   ```javascript
-   // Get all tasks assigned to you
-   const myTasks = await rybovContract.getUserTasks(myAddress);
-   ```
-
-2. **Complete a Task**:
-   ```javascript
-   // Mark a task as completed
-   await rybovContract.completeTask(taskId);
-   ```
-
-3. **Check Your Balance**:
+1. **Check Your Balance**:
    ```javascript
    // Check your token balance
    const balance = await rybovContract.balanceOf(myAddress);
+   console.log("Balance:", ethers.utils.formatEther(balance));
+   ```
+
+2. **Transfer Tokens**:
+   ```javascript
+   // Transfer 10 tokens to another address
+   await rybovContract.transfer(recipientAddress, ethers.utils.parseEther("10"));
+   ```
+
+3. **Approve Spending**:
+   ```javascript
+   // Approve another address to spend 20 tokens on your behalf
+   await rybovContract.approve(spenderAddress, ethers.utils.parseEther("20"));
    ```
 
 ## Frontend Integration
@@ -148,11 +149,11 @@ const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const rybovAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
 const rybovContract = new ethers.Contract(rybovAddress, rybovABI, signer);
 
-// Create a task
-async function createTask(assigneeAddress, description, reward) {
-  const tx = await rybovContract.createTask(assigneeAddress, description, reward);
+// Transfer tokens
+async function transferTokens(recipientAddress, amount) {
+  const tx = await rybovContract.transfer(recipientAddress, ethers.utils.parseEther(amount));
   await tx.wait();
-  console.log("Task created successfully!");
+  console.log("Tokens transferred successfully!");
 }
 ```
 
